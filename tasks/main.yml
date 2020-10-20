@@ -1,0 +1,26 @@
+---
+- name: Git clone zabbix_template_md.git
+  git:
+    repo: https://github.com/krom/zabbix_template_md.git
+    dest: /tmp/zabbix_template_md
+
+- name: Importing userparameter_md.conf configuration file
+  shell: cp /tmp/zabbix_template_md/userparameter_md.conf /etc/zabbix/zabbix_agentd.d/userparameter_md.conf
+  args:
+    executable: /bin/bash
+
+- name: restart zabbix-agent 
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: zabbix-agent
+
+- name: enable service zabbix-agent
+  systemd:
+    name: zabbix-agent
+    enabled: yes
+
+- name: Make sure zabbix-agent service is running
+  systemd:
+    state: started
+    name: zabbix-agent
